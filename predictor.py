@@ -105,11 +105,14 @@ if submitted:
         expected_value = explainer.expected_value
 
     # ===== Force Plot 可视化（HTML方式）=====
-    force_plot_html = shap.force_plot(
-        base_value=expected_value,
-        shap_values=shap_value_sample,
-        features=model_input
+    force_plot = shap.force_plot(
+    base_value=expected_value,
+    shap_values=shap_value_sample,
+    features=model_input,
+    matplotlib=True,
+    show=False
     )
 
-    st.markdown("### SHAP Force Plot (Feature Impact)")
-    components.html(force_plot_html.html(), height=300, scrolling=True)
+    plt.savefig("shap_force_plot.png", bbox_inches='tight', dpi=1200)
+    st.image("shap_force_plot.png", caption="SHAP Force Plot (Feature Impact)", use_column_width=True)
+
