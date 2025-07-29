@@ -7,7 +7,6 @@ import streamlit.components.v1 as components
 from lime.lime_tabular import LimeTabularExplainer  # 可保留以备后续拓展
 import matplotlib.pyplot as plt
 
-
 # 设置页面标题
 st.title("Prediction of Cardiovascular Risk in New–onset T2D")
 st.caption("Based on TyG Index and Carotid Ultrasound Features")
@@ -25,7 +24,6 @@ feature_names = [
     "Maximum plaque thickness (mm)",
     "Carotid plaque burden"
 ]
-
 
 # ===== 输入表单 =====
 with st.form("input_form"):
@@ -92,21 +90,40 @@ if submitted:
     predicted_proba = model.predict_proba(model_input)[0]
     probability = predicted_proba[1] * 100
 
-    # ==== 整合展示预测结果和 SHAP 可视化 ====
+    # ==== 展示预测概率与风险等级 ====
     st.subheader("Prediction Result & Explanation")
     st.markdown(f"**Estimated probability:** {probability:.1f}%")
 
-    # ===== SHAP Force Plot =====
+    # ===== 风险等级判断（根据设定区间）=====
+    low_threshold = 0.12
+    mid_threshold = 0.41
+    high_threshold = 0.58
+
+    if predicted_proba[1] <= low_threshold:
+        risk_level = "🟢 **You are currently at a low risk of cardiovascular disease.**"
+        suggestion = "✅ Please continue to maintain a healthy lifestyle and attend regular follow-up visits."
+    elif predicted_proba[1] <= mid_threshold:
+        risk_level = "🟡 **You are at a moderate risk of cardiovascular disease.**"
+        suggestion = "⚠️ It is advised to monitor your condition closely and consider preventive interventions."
+    else:
+        risk_level = "🔴 **You are at a high risk of cardiovascular disease.**"
+        suggestion = "🚨 It is recommended to consult a physician promptly and take proactive medical measures."
+
+    st.markdown(risk_level)
+    st.markdown(suggestion)
+
+    # ===== SHAP Force Plot 可解释性分析 =====
     explainer = shap.TreeExplainer(model)
     shap_values = explainer.shap_values(model_input)
 
-    if isinstance(shap_values, list):  # Binary classification
+    if isinstance(shap_values, list):  # 二分类
         shap_value_sample = shap_values[1]
         expected_value = explainer.expected_value[1]
     else:
         shap_value_sample = shap_values
         expected_value = explainer.expected_value
 
+    # 生成 SHAP force plot 图像
     force_plot = shap.force_plot(
         base_value=expected_value,
         shap_values=shap_value_sample,
@@ -117,5 +134,6 @@ if submitted:
 
     plt.savefig("shap_force_plot.png", bbox_inches='tight', dpi=1200)
     plt.close()
-    st.image("shap_force_plot.png")
+    st.image("shap_force_plot.png", caption="SHAP Force Plot (Feature Contribution)")
+
 
