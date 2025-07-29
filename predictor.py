@@ -20,11 +20,12 @@ X_test = pd.read_csv('x_test.csv')            # 原始测试集数据用于获�
 feature_names = [
     "Age (years)",
     "Hypertension",
-    "IMT (mm)",
     "TyG index",
-    "Carotid plaque burden",
-    "Maximum plaque thickness (mm)"
+    "IMT (mm)",
+    "Maximum plaque thickness (mm)",
+    "Carotid plaque burden"
 ]
+
 
 # ===== 输入表单 =====
 with st.form("input_form"):
