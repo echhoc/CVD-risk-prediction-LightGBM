@@ -89,30 +89,30 @@ if submitted:
     predicted_proba = model.predict_proba(model_input)[0]
     probability = predicted_proba[1] * 100
 
-    # ==== 显示预测结果 ====
+    # ==== 整合展示预测结果和 SHAP 可视化 ====
     st.subheader("Prediction Result & Explanation")
     st.markdown(f"**Estimated probability:** {probability:.1f}%")
 
-    # ===== SHAP 可解释性分析 =====
+    # ===== SHAP Force Plot =====
     explainer = shap.TreeExplainer(model)
     shap_values = explainer.shap_values(model_input)
 
-    if isinstance(shap_values, list):  # 二分类情况
+    if isinstance(shap_values, list):  # Binary classification
         shap_value_sample = shap_values[1]
         expected_value = explainer.expected_value[1]
     else:
         shap_value_sample = shap_values
         expected_value = explainer.expected_value
 
-    # ===== Force Plot 可视化（HTML方式）=====
     force_plot = shap.force_plot(
-    base_value=expected_value,
-    shap_values=shap_value_sample,
-    features=model_input,
-    matplotlib=True,
-    show=False
+        base_value=expected_value,
+        shap_values=shap_value_sample,
+        features=model_input,
+        matplotlib=True,
+        show=False
     )
 
     plt.savefig("shap_force_plot.png", bbox_inches='tight', dpi=1200)
-    st.image("shap_force_plot.png", caption="SHAP Force Plot (Feature Impact)", use_column_width=True)
+    plt.close()
+    st.image("shap_force_plot.png")
 
