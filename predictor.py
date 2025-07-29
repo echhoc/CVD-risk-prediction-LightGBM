@@ -5,6 +5,8 @@ import joblib
 import shap
 import streamlit.components.v1 as components
 from lime.lime_tabular import LimeTabularExplainer  # 可保留以备后续拓展
+import matplotlib.pyplot as plt
+
 
 # 设置页面标题
 st.title("Prediction of Cardiovascular Risk in New–onset T2D")
