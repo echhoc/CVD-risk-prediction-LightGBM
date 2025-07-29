@@ -94,7 +94,6 @@ if submitted:
     st.markdown(f"**Estimated probability:** {probability:.1f}%")
 
     # ===== SHAP 可解释性分析 =====
-    shap.initjs()
     explainer = shap.TreeExplainer(model)
     shap_values = explainer.shap_values(model_input)
 
