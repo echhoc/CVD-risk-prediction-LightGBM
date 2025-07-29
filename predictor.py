@@ -95,9 +95,9 @@ if submitted:
     st.markdown(f"**Estimated probability:** {probability:.1f}%")
 
     # ===== 风险等级判断（根据设定区间）=====
-    low_threshold = 0.12
-    mid_threshold = 0.41
-    high_threshold = 0.58
+    low_threshold = 0.1226
+    mid_threshold = 0.42
+
 
     if predicted_proba[1] <= low_threshold:
         risk_level = "🟢 **You are currently at a low risk of cardiovascular disease.**"
